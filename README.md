@@ -1,6 +1,7 @@
 # mock-gcp | Mock GCP Services
 
 ![Python Version](https://img.shields.io/badge/python-3.7-blue)
+![Supported GCS Version](https://img.shields.io/badge/gcs-v1.22.0-brightgreen)
 
 A library that allows to mock out unit tests based on GCP services
 
