@@ -2,6 +2,7 @@
 
 ![Python Version](https://img.shields.io/badge/python-3.7-blue)
 ![Supported GCS Version](https://img.shields.io/badge/gcs-v1.22.0-brightgreen)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A library that allows to mock out unit tests based on GCP services
 
