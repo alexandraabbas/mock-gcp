@@ -2,7 +2,7 @@
 
 ![Python Version](https://img.shields.io/badge/python-3.7-blue)
 
-A library that allows to mock out unit tests based on GCP services
+A library that allows to mock out GCP services in unit tests.
 
 ## Intro
 
