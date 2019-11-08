@@ -111,10 +111,15 @@ class Client:
         """
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
 
+        # TODO: Use bucket.reload(client=self) when Bucket class is implemented
         if bucket.name in self.backend.buckets.keys():
             return self.backend.buckets[bucket.name]
         else:
-            raise NotFound
+            raise NotFound(
+                "404 GET https://storage.googleapis.com/storage/v1/b/{}?projection=noAcl".format(
+                    bucket.name
+                )
+            )
 
     def lookup_bucket(self, bucket_name):
         """Get a bucket by name, returning None if not found.
