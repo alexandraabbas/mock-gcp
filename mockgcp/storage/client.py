@@ -13,15 +13,17 @@ class Client:
         client_info=None,
         client_options=None,
     ):
-        if project is None:
+        self.backend = backend
+        if self.backend.project is None:
             project = "<none>"
+        else:
+            project = self.backend.project
 
         self.project = project
         self.credentials = credentials
         self._http = _http
         self.client_info = client_info
         self.client_options = client_options
-        self.backend = backend
 
     @classmethod
     def create_anonymous_client(cls):
