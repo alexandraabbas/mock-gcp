@@ -1,5 +1,6 @@
+from google.cloud import storage
 from google.api_core import page_iterator
-from google.cloud.exceptions import NotFound
+from google.cloud.exceptions import NotFound, Conflict
 
 from mockgcp.storage.bucket import Bucket
 from mockgcp.backend import backend
@@ -102,7 +103,7 @@ class Client:
                 The bucket resource to pass or name to create.
 
         Returns:
-            google.cloud.storage.bucket.Bucket
+            mockgcp.storage.bucket.Bucket
                 The bucket matching the name provided.
 
         Raises:
@@ -122,7 +123,7 @@ class Client:
         :type bucket_name: str
         :param bucket_name: The name of the bucket to get.
 
-        :rtype: :class:`google.cloud.storage.bucket.Bucket`
+        :rtype: :class:`mockgcp.storage.bucket.Bucket`
         :returns: The bucket matching the name provided or None if not found.
         """
         try:
@@ -135,7 +136,7 @@ class Client:
 
         Args:
             bucket_or_name (Union[ \
-                :class:`~google.cloud.storage.bucket.Bucket`, \
+                :class:`~mockgcp.storage.bucket.Bucket`, \
                  str, \
             ]):
                 The bucket resource to pass or name to create.
@@ -147,7 +148,7 @@ class Client:
                 If not passed, uses the project set on the client.
 
         Returns:
-            google.cloud.storage.bucket.Bucket
+            mockgcp.storage.bucket.Bucket
                 The newly created bucket.
 
         Raises:
@@ -156,7 +157,10 @@ class Client:
         """
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
         # bucket.create(client=self, project=project)
-        self.backend.buckets[bucket.name] = bucket
+        if bucket.name in self.backend.buckets.keys():
+            raise Conflict
+        else:
+            self.backend.buckets[bucket.name] = bucket
         return bucket
 
     def download_blob_to_file(self, blob_or_uri, file_obj, start=None, end=None):
@@ -321,22 +325,6 @@ class Client:
     def create_hmac_key(
         self, service_account_email, project_id=None, user_project=None
     ):
-        """Create an HMAC key for a service account.
-
-        :type service_account_email: str
-        :param service_account_email: e-mail address of the service account
-
-        :type project_id: str
-        :param project_id: (Optional) explicit project ID for the key.
-            Defaults to the client's project.
-
-        :type user_project: str
-        :param user_project: (Optional) This parameter is currently ignored.
-
-        :rtype:
-            Tuple[:class:`~google.cloud.storage.hmac_key.HMACKeyMetadata`, str]
-        :returns: metadata for the created key, plus the bytes of the key's secret, which is an 40-character base64-encoded string.
-        """
         raise NotImplementedError
 
     def list_hmac_keys(
@@ -347,75 +335,15 @@ class Client:
         project_id=None,
         user_project=None,
     ):
-        """List HMAC keys for a project.
-
-        :type max_results: int
-        :param max_results:
-            (Optional) max number of keys to return in a given page.
-
-        :type service_account_email: str
-        :param service_account_email:
-            (Optional) limit keys to those created by the given service account.
-
-        :type show_deleted_keys: bool
-        :param show_deleted_keys:
-            (Optional) included deleted keys in the list. Default is to
-            exclude them.
-
-        :type project_id: str
-        :param project_id: (Optional) explicit project ID for the key.
-            Defaults to the client's project.
-
-        :type user_project: str
-        :param user_project: (Optional) This parameter is currently ignored.
-
-        :rtype:
-            Tuple[:class:`~google.cloud.storage.hmac_key.HMACKeyMetadata`, str]
-        :returns: metadata for the created key, plus the bytes of the key's secret, which is an 40-character base64-encoded string.
-        """
         raise NotImplementedError
 
     def get_hmac_key_metadata(self, access_id, project_id=None, user_project=None):
-        """Return a metadata instance for the given HMAC key.
-
-        :type access_id: str
-        :param access_id: Unique ID of an existing key.
-
-        :type project_id: str
-        :param project_id: (Optional) project ID of an existing key.
-            Defaults to client's project.
-
-        :type user_project: str
-        :param user_project: (Optional) This parameter is currently ignored.
-        """
         raise NotImplementedError
 
 
 def _item_to_bucket(iterator, item):
-    """Convert a JSON bucket to the native object.
-
-    :type iterator: :class:`~google.api_core.page_iterator.Iterator`
-    :param iterator: The iterator that has retrieved the item.
-
-    :type item: dict
-    :param item: An item to be converted to a bucket.
-
-    :rtype: :class:`.Bucket`
-    :returns: The next bucket in the page.
-    """
     raise NotImplementedError
 
 
 def _item_to_hmac_key_metadata(iterator, item):
-    """Convert a JSON key metadata resource to the native object.
-
-    :type iterator: :class:`~google.api_core.page_iterator.Iterator`
-    :param iterator: The iterator that has retrieved the item.
-
-    :type item: dict
-    :param item: An item to be converted to a key metadata instance.
-
-    :rtype: :class:`~google.cloud.storage.hmac_key.HMACKeyMetadata`
-    :returns: The next key metadata instance in the page.
-    """
     raise NotImplementedError
