@@ -1,4 +1,3 @@
-from google.cloud import storage
 from google.api_core import page_iterator
 from google.cloud.exceptions import NotFound, Conflict
 
