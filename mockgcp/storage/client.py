@@ -96,7 +96,7 @@ class Client:
 
         Args:
             bucket_or_name (Union[ \
-                :class:`~google.cloud.storage.bucket.Bucket`, \
+                :class:`~mockgcp.storage.bucket.Bucket`, \
                  str, \
             ]):
                 The bucket resource to pass or name to create.
@@ -112,7 +112,7 @@ class Client:
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
 
         if bucket.name in self.backend.buckets.keys():
-            return bucket
+            return self.backend.buckets[bucket.name]
         else:
             raise NotFound
 
