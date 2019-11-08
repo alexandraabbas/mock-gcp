@@ -1,7 +1,10 @@
+from google.api_core import page_iterator
 from google.cloud.exceptions import NotFound
 
 from mockgcp.storage.bucket import Bucket
 from mockgcp.backend import backend
+
+from unittest import mock
 
 
 class Client:
@@ -247,16 +250,7 @@ class Client:
         fields=None,
         project=None,
     ):
-        """Get all buckets in the project associated to the client.
-
-        This will not populate the list of blobs available in each
-        bucket.
-
-        .. literalinclude:: snippets.py
-            :start-after: [START list_buckets]
-            :end-before: [END list_buckets]
-
-        This implements "storage.buckets.list".
+        """Get all buckets from StorageBackend associated with the client.
 
         :type max_results: int
         :param max_results: Optional. The maximum number of buckets to return.
@@ -295,7 +289,34 @@ class Client:
         :returns: Iterator of all :class:`~google.cloud.storage.bucket.Bucket`
                   belonging to this project.
         """
-        raise NotImplementedError
+        if project is None:
+            project = self.project
+
+        if project is None:
+            raise ValueError("Client project not set:  pass an explicit project.")
+
+        if isinstance(max_results, int):
+            buckets = list(self.backend.buckets.values())[:max_results]
+        else:
+            buckets = list(self.backend.buckets.values())
+
+        if isinstance(prefix, str):
+            buckets = [bucket for bucket in buckets if bucket.name.startswith(prefix)]
+
+        path = "/foo"
+        page_response = {"items": buckets}
+        api_request = mock.Mock(return_value=page_response)
+        extra_params = {"key": "val"}
+
+        return page_iterator.HTTPIterator(
+            mock.sentinel.client,
+            api_request,
+            path=path,
+            item_to_value=page_iterator._item_to_value_identity,
+            max_results=max_results,
+            page_token=mock.sentinel.token,
+            extra_params=extra_params,
+        )
 
     def create_hmac_key(
         self, service_account_email, project_id=None, user_project=None
