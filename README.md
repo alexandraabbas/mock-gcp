@@ -21,7 +21,7 @@ Let's say you have the following function to test.
 ```python
 from google.cloud import storage
 
-def create_bucket_if_doesnt_exists(bucket_name):
+def create_bucket_if_doesnt_exist(bucket_name):
     client = storage.Client()
 
     if client.lookup_bucket(bucket_name) is None:
@@ -37,7 +37,7 @@ from google.cloud import storage
 from mockgcp.storage.decorators import mock_storage
 
 @mock_storage
-def test_create_bucket_if_doesnt_exists_when_bucket_exists():
+def test_create_bucket_if_doesnt_exist_when_bucket_exists():
     client = storage.Client()
     # Firts, need to create a bucket in our virtual Google Cloud project
     client.create_bucket("test-bucket")
