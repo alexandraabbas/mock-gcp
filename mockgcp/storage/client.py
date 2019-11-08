@@ -86,7 +86,7 @@ class Client:
         :rtype: :class:`mockgcp.storage.bucket.Bucket`
         :returns: The bucket object created.
         """
-        raise Bucket(client=self, name=bucket_name, user_project=user_project)
+        return Bucket(client=self, name=bucket_name, user_project=user_project)
 
     def batch(self):
         raise NotImplementedError
