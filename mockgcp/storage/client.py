@@ -1,6 +1,7 @@
 from google.cloud.exceptions import NotFound
 
 from mockgcp.storage.bucket import Bucket
+from mockgcp.backend import backend
 
 
 class Client:
@@ -11,9 +12,7 @@ class Client:
         _http=None,
         client_info=None,
         client_options=None,
-        backend=None,
     ):
-        super(Client, self).__init__()
         if project is None:
             project = "<none>"
 
@@ -22,7 +21,6 @@ class Client:
         self._http = _http
         self.client_info = client_info
         self.client_options = client_options
-
         self.backend = backend
 
     @classmethod
@@ -108,7 +106,7 @@ class Client:
         """
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
 
-        if bucket in backend.buckets:
+        if bucket.name in self.backend.buckets.keys():
             return bucket
         else:
             raise NotFound
@@ -153,7 +151,7 @@ class Client:
         """
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
         # bucket.create(client=self, project=project)
-        backend.buckets.append(bucket)
+        self.backend.buckets[bucket.name] = bucket
         return bucket
 
     def download_blob_to_file(self, blob_or_uri, file_obj, start=None, end=None):
