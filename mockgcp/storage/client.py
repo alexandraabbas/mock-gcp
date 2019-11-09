@@ -2,7 +2,7 @@ from google.api_core import page_iterator
 from google.cloud.exceptions import NotFound, Conflict
 
 from mockgcp.storage.bucket import Bucket
-from mockgcp.backend import backend, StorageBackend
+from mockgcp.storage.backend import backend, StorageBackend
 
 from unittest import mock
 
