@@ -34,7 +34,7 @@ To test this function with `mock-gcp` use the `@mock_storage` decorator which wi
 
 ```python
 from google.cloud import storage
-from mockgcp.storage.decorators import mock_storage
+from mockgcp.storage.backend import mock_storage
 
 @mock_storage
 def test_create_bucket_if_doesnt_exist_when_bucket_exists():
