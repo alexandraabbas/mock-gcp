@@ -2,7 +2,7 @@ from google.api_core import page_iterator
 from google.cloud.exceptions import NotFound, Conflict
 
 from mockgcp.storage.bucket import Bucket
-from mockgcp.storage.backend import backend, StorageBackend
+from mockgcp.storage import backend
 
 from unittest import mock
 
@@ -15,11 +15,8 @@ class Client:
         _http=None,
         client_info=None,
         client_options=None,
-        initialize_backend=False,
     ):
-        # NOTE: Quick fix for reinitialising backend, later has to be 
-        # Backend should be initialised in decorator ans must be called for every function
-        self.backend = StorageBackend() if initialize_backend else backend
+        self.backend = backend.backend
         if self.backend.project is None:
             project = "<none>"
         else:
