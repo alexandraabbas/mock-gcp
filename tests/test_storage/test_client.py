@@ -40,5 +40,4 @@ def test_get_bucket_with_non_existing_bucket_name():
     with pytest.raises(NotFound):
         client = storage.Client()
         buckets = list(client.list_buckets())
-        print([bucket.name for bucket in buckets])
         client.get_bucket("test-bucket-name-v2")
