@@ -1,7 +1,7 @@
 from google.cloud._helpers import _bytes_to_unicode
 
 
-class Blob:
+class MockBlob:
     def __init__(
         self,
         name,
