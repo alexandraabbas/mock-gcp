@@ -2,7 +2,7 @@ import uuid
 import functools
 from unittest.mock import patch
 
-from mockgcp.storage.client import Client
+from mockgcp.storage.client import MockClient
 
 
 class StorageBackend(object):
@@ -20,7 +20,7 @@ class StorageBackend(object):
     def mock_storage(self, func):
         def wrapper(*args, **kwargs):
             self.reset()
-            with patch("google.cloud.storage.Client", Client):
+            with patch("google.cloud.storage.Client", MockClient):
                 return func(*args, **kwargs)
 
         functools.update_wrapper(wrapper, func)
