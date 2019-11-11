@@ -1,13 +1,13 @@
 from google.api_core import page_iterator
 from google.cloud.exceptions import NotFound, Conflict
 
-from mockgcp.storage.bucket import Bucket
+from mockgcp.storage.bucket import MockBucket
 from mockgcp.storage import backend
 
 from unittest import mock
 
 
-class Client:
+class MockClient:
     def __init__(
         self,
         project=None,
@@ -47,10 +47,10 @@ class Client:
         raise NotImplementedError
 
     def _bucket_arg_to_bucket(self, bucket_or_name):
-        if isinstance(bucket_or_name, Bucket):
+        if isinstance(bucket_or_name, MockBucket):
             bucket = bucket_or_name
         else:
-            bucket = Bucket(self, name=bucket_or_name)
+            bucket = MockBucket(self, name=bucket_or_name)
         return bucket
 
     @property
@@ -61,7 +61,7 @@ class Client:
         raise NotImplementedError
 
     def bucket(self, bucket_name, user_project=None):
-        return Bucket(client=self, name=bucket_name, user_project=user_project)
+        return MockBucket(client=self, name=bucket_name, user_project=user_project)
 
     def batch(self):
         raise NotImplementedError
@@ -69,7 +69,7 @@ class Client:
     def get_bucket(self, bucket_or_name):
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
 
-        # TODO: Use bucket.reload(client=self) when Bucket class is implemented
+        # TODO: Use bucket.reload(client=self) when MockBucket class is implemented
         if bucket.name in self.backend.buckets.keys():
             return self.backend.buckets[bucket.name]
         else:
