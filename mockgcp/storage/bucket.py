@@ -4,10 +4,10 @@ from google.cloud.exceptions import NotFound
 from google.cloud.storage._helpers import _validate_name
 
 from mockgcp.storage import backend
-from mockgcp.storage.blob import Blob
+from mockgcp.storage.blob import MockBlob
 
 
-class Bucket:
+class MockBucket:
     def __init__(self, client, name=None, user_project=None):
         name = _validate_name(name)
         self.name = name
