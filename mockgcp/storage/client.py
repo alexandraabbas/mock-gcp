@@ -162,7 +162,11 @@ class Client:
         bucket = self._bucket_arg_to_bucket(bucket_or_name)
         # bucket.create(client=self, project=project)
         if bucket.name in self.backend.buckets.keys():
-            raise Conflict
+            raise Conflict(
+                "409 POST https://storage.googleapis.com/storage/v1/b?project={}: You already own this bucket. Please select another name.".format(
+                    self.project
+                )
+            )
         else:
             self.backend.buckets[bucket.name] = bucket
         return bucket
