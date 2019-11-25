@@ -108,7 +108,7 @@ class MockBucket:
         self, blob_name, client=None, encryption_key=None, generation=None, **kwargs
     ):
         if blob_name in self.backend.blobs[self.name]:
-            return Blob(
+            return MockBlob(
                 bucket=self,
                 name=blob_name,
                 encryption_key=encryption_key,
