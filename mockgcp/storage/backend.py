@@ -10,8 +10,8 @@ class StorageBackend(object):
         if project is None:
             project = "test-project-" + str(uuid.uuid1())
         self.project = project
-        self.buckets = {}
-        self.blobs = {}
+        self.buckets = {}  # key: bucket name, value: bucket object
+        self.blobs = {}  # key: bucket name, value: list of blob names (??)
 
     def reset(self):
         self.buckets = {}
