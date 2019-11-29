@@ -20,7 +20,6 @@ Before creating a pull request go through the checkpoints below.
 
 - [ ] Have you implemented unit tests for your methods?
 - [ ] Have you imeplemented unit tests for edge cases?
-- [ ] Have you run the linter (pylama)?
 - [ ] If applicable, have you added documentation to your methods/[README.md](https://github.com/alexandraabbas/mock-gcp/blob/master/README.md)?
 - [ ] Have you updated [IMPLEMENTATION_COVERAGE.md](https://github.com/alexandraabbas/mock-gcp/blob/master/IMLEMENTATION_COVERAGE.md)?
 - [ ] If you have used external libraries (try to minimise these), have you added them to [requirements.txt](https://github.com/alexandraabbas/mock-gcp/blob/master/requirements.txt)?
