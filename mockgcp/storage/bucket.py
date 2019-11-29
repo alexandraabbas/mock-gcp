@@ -118,6 +118,9 @@ class MockBucket:
         else:
             return None
 
+    def delete_blob(self, blob_name, client=None, generation=None):
+        del self._backend.blobs[self.name][blob_name]
+
     def list_blobs(
         self,
         max_results=None,
