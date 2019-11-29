@@ -18,12 +18,12 @@ Use the Makefile to get started. First, install the requirements using `make ini
 
 Before creating a pull request go through the checkpoints below.
 
-[] Have you implemented unit tests tests for your methods?
-[] Have you imeplemented unit tests for edge cases?
-[] Have you run the linter (pylama)?
-[] If applicable, have you added documentation to your methods/README?
-[] Have you updated the IMPLEMENTATION COVERAGE?
-[] If you have used external libraries (try to minimise these), have you added them to requirements.txt?
+[ ] Have you implemented unit tests tests for your methods?
+[ ] Have you imeplemented unit tests for edge cases?
+[ ] Have you run the linter (pylama)?
+[ ] If applicable, have you added documentation to your methods/README?
+[ ] Have you updated the IMPLEMENTATION COVERAGE?
+[ ] If you have used external libraries (try to minimise these), have you added them to requirements.txt?
 
 If all these are checked, create a pull request. We'll review your code and merge your branch when it's finished.
 
