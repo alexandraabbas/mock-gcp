@@ -1,18 +1,13 @@
 from mockgcp.storage import backend
+from mockgcp.storage.bucket import MockBucket
 
 from google.cloud.storage import Blob
 
-# from six.moves.urllib.parse import quote
-
-# from google.cloud._helpers import _bytes_to_unicode
-# from google.cloud._helpers import _to_bytes
-from google.cloud.exceptions import NotFound
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import urlsplit
 
 
-class MockBlob(Blob):
-    _chunk_size = None
-    _CHUNK_SIZE_MULTIPLE = 256 * 1024
-
+class MockBlob:
     def __init__(
         self,
         name,
@@ -22,118 +17,43 @@ class MockBlob(Blob):
         kms_key_name=None,
         generation=None,
     ):
-        super(MockBlob, self).__init__(
-            name=name,
-            bucket=bucket,
-            chunk_size=chunk_size,
-            encryption_key=encryption_key,
-            kms_key_name=kms_key_name,
-            generation=generation,
-        )
-        # TODO: Implement storage.acl
-        self._acl = None
+        self.name = name
+        self._bucket = bucket
         self._backend = backend.backend
 
-    def generate_signed_url(
-        self,
-        expiration=None,
-        api_access_endpoint=_API_ACCESS_ENDPOINT,
-        method="GET",
-        content_md5=None,
-        content_type=None,
-        response_disposition=None,
-        response_type=None,
-        generation=None,
-        headers=None,
-        query_parameters=None,
-        client=None,
-        credentials=None,
-        version=None,
-    ):
-        return NotImplementedError
+    @property
+    def bucket(self):
+        return self._bucket
+
+    @property
+    def client(self):
+        return self.bucket.client
+
+    @property
+    def path(self):
+        if not self.name:
+            raise ValueError("Cannot determine path without a blob name.")
+        # TODO: Make sure this is the same output as the original function
+        return self.bucket.path + "/" + self.name
 
     def exists(self, client=None):
-        if self.name in self._backend.blobs.values():
+        if self.name in self._backend.blobs[self.bucket.name].keys():
             return True
         else:
             return False
 
     def delete(self, client=None):
-        # TODO: Implement Bukcet.delete_blob
-        return NotImplementedError
+        return self.bucket.delete_blob(
+            self.name, client=client, generation=self.generation
+        )
 
-    def _get_transport(self, client):
-        return NotImplementedError
+    @classmethod
+    def from_string(cls, uri, client=None):
+        scheme, netloc, path, query, frag = urlsplit(uri)
+        if scheme != "gs":
+            raise ValueError("URI scheme must be gs")
 
-    def _do_download(
-        self, transport, file_obj, download_url, headers, start=None, end=None
-    ):
-        return NotImplementedError
-
-    def download_to_file(self, file_obj, client=None, start=None, end=None):
-        return NotImplementedError
-
-    def download_to_filename(self, filename, client=None, start=None, end=None):
-        return NotImplementedError
-
-    def download_as_string(self, client=None, start=None, end=None):
-        return NotImplementedError
-
-    def _do_multipart_upload(
-        self, client, stream, content_type, size, num_retries, predefined_acl
-    ):
-        return NotImplementedError
-
-    def _initiate_resumable_upload(
-        self,
-        client,
-        stream,
-        content_type,
-        size,
-        num_retries,
-        predefined_acl=None,
-        extra_headers=None,
-        chunk_size=None,
-    ):
-        return NotImplementedError
-
-    def _do_upload(
-        self, client, stream, content_type, size, num_retries, predefined_acl
-    ):
-        return NotImplementedError
-
-    def upload_from_file(
-        self,
-        file_obj,
-        rewind=False,
-        size=None,
-        content_type=None,
-        num_retries=None,
-        client=None,
-        predefined_acl=None,
-    ):
-        return NotImplementedError
-
-    def upload_from_filename(
-        self, filename, content_type=None, client=None, predefined_acl=None
-    ):
-        return NotImplementedError
-
-    def upload_from_string(
-        self, data, content_type="text/plain", client=None, predefined_acl=None
-    ):
-        return NotImplementedError
-
-    def create_resumable_upload_session(
-        self, content_type=None, size=None, origin=None, client=None
-    ):
-        return NotImplementedError
-
-    def update_storage_class(self, new_class, client=None):
-        # Storage class must be stored as part of the MockBucket object
-        return NotImplementedError
-
-    @property
-    def component_count(self):
-        return NotImplementedError
+        bucket = MockBucket(client, name=netloc)
+        return cls(path[1:], bucket)
+    
 
